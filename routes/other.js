@@ -1,5 +1,4 @@
 const express = require('express')
-const { PrismaClient } = require('@prisma/client')
 const { validateToken } = require('../middleware/validation')
 const { getVacationDays } = require('../service/employee')
 

@@ -1,12 +1,11 @@
 const express = require('express')
-const { PrismaClient } = require('@prisma/client')
 const { validateToken } = require('../middleware/validation')
 const moment = require('moment')
 const { getVacationDays } = require('../service/employee')
 const { newRequest } = require('../service/request')
+const requestService = require('../service/request')
 
 const router = express.Router()
-const prisma = new PrismaClient()
 
 //protect all routes with jwt
 router.use(validateToken)
@@ -14,15 +13,10 @@ router.use(validateToken)
 //get all my requests
 router.get('/', async (req, res) => {
   try {
-    const status = req.query.status
-    console.log(status)
-    const myRequests = await prisma.request.findMany({
-      where: {
-        author: req.headers.userId,
-      },
-      orderBy: { id: 'asc' },
-    })
-
+    const myRequests = await requestService.all(
+      req.headers.userId, //its injected by middleware based on jwt
+      req.query.status
+    )
     res.send(myRequests)
   } catch (e) {
     return res.status(500).send(e)
@@ -49,6 +43,19 @@ router.post('/', async (req, res) => {
 
   const request = await newRequest(id, vacation_start_date, vacation_end_date)
   res.send(`request successfully created, request id: ${request.id}`)
+})
+
+//get all requests
+router.get('/all', async (req, res) => {
+  try {
+    const allRequests = await requestService.all(
+      req.query.author,
+      req.query.status
+    )
+    res.send(allRequests)
+  } catch (e) {
+    return res.status(500).send(e)
+  }
 })
 
 module.exports = router

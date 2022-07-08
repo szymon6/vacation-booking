@@ -18,7 +18,10 @@ router.post('/login', async (req, res) => {
     if (!employee || !(await bcrypt.compare(password, employee.password)))
       return res.status(401).send() //bad login or password
 
-    const token = jwt.sign({ userId: employee.id }, 'testkey')
+    const token = jwt.sign(
+      { userId: employee.id, type: employee.type },
+      'testkey'
+    )
     delete employee.password
 
     res.send({ user: employee, token })

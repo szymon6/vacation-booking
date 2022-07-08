@@ -13,4 +13,12 @@ async function getVacationDays(id) {
   return v.vacationDays
 }
 
-module.exports = { getVacationDays }
+async function subtractVacationDays(id, n) {
+  const current = await getVacationDays(id)
+  await prisma.employee.update({
+    where: { id },
+    data: { vacationDays: current - n },
+  })
+}
+
+module.exports = { getVacationDays, subtractVacationDays }

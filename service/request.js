@@ -1,4 +1,6 @@
 const { PrismaClient } = require('@prisma/client')
+const { getDays } = require('../functions')
+const { subtractVacationDays } = require('./employee')
 const prisma = new PrismaClient()
 
 async function get(id) {
@@ -42,6 +44,11 @@ async function newRequest(author, vacation_start_date, vacation_end_date) {
 }
 
 async function approve(id) {
+  const request = await get(id)
+
+  const days = getDays(request.vacation_start_date, request.vacation_end_date)
+  await subtractVacationDays(request.author, days)
+
   return await prisma.request.update({
     where: { id },
     data: { status: 1 },

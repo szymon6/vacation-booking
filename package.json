@@ -1,0 +1,26 @@
+{
+  "name": "java-api-sfyynz",
+  "version": "1.0.0",
+  "description": "It's November, and everyone is planning their holiday vacation. But management is struggling! They need a solution to approve vacation requests while also ensuring that there are still enough employees in the office to achieve end-of-year goals.",
+  "main": "index.js",
+  "scripts": {
+    "start": "nodemon index",
+    "migrate": "prisma migrate dev",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "http://wwg-srl-ksiibi@git.codesubmit.io/wwg-srl/java-api-sfyynz"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.18.1",
+    "nodemon": "^2.0.19",
+    "prisma": "^4.0.0"
+  },
+  "devDependencies": {
+    "eslint": "^8.19.0"
+  }
+}

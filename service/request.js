@@ -1,6 +1,12 @@
 const { PrismaClient } = require('@prisma/client')
 const prisma = new PrismaClient()
 
+async function get(id) {
+  return await prisma.request.findUnique({
+    where: { id },
+  })
+}
+
 async function all(author, status) {
   if (author) author = Number(author)
   return await prisma.request.findMany({
@@ -34,4 +40,19 @@ async function newRequest(author, vacation_start_date, vacation_end_date) {
     },
   })
 }
-module.exports = { all, newRequest }
+
+async function approve(id) {
+  return await prisma.request.update({
+    where: { id },
+    data: { status: 1 },
+  })
+}
+
+async function reject(id) {
+  return await prisma.request.update({
+    where: { id },
+    data: { status: 3 },
+  })
+}
+
+module.exports = { get, all, newRequest, approve, reject }

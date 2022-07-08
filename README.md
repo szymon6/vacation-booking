@@ -10,7 +10,7 @@ post: /auth/login
 
 jwt token is sended, it needs to be attached (by "token" key in header) to all fallowing requests:
 
-### routes for everyone
+### routes for all employees
 
 see my requests:
 get: /request

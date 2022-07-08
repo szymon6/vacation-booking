@@ -1,5 +1,10 @@
 const express = require('express')
-const { validateToken, ensureManager } = require('../middleware/validation')
+const {
+  validateToken,
+  ensureManager,
+  validateId,
+  ensurePending,
+} = require('../middleware/validation')
 const moment = require('moment')
 const { getVacationDays } = require('../service/employee')
 const { newRequest } = require('../service/request')
@@ -9,6 +14,9 @@ const router = express.Router()
 
 //protect all routes with jwt
 router.use(validateToken)
+
+//validate and parse id to number
+router.param('id', validateId)
 
 //get all my requests
 router.get('/', async (req, res) => {
@@ -47,14 +55,32 @@ router.post('/', async (req, res) => {
 
 //get all requests
 router.get('/all', ensureManager, async (req, res) => {
-  console.log(req.headers.userType)
-
   try {
     const allRequests = await requestService.all(
       req.query.author,
       req.query.status
     )
     res.send(allRequests)
+  } catch (e) {
+    return res.status(500).send(e)
+  }
+})
+
+//approve
+router.post('/approve/:id', ensureManager, ensurePending, async (req, res) => {
+  try {
+    const approvedRequest = await requestService.approve(req.params.id)
+    res.send(`request ${approvedRequest.id} approved`)
+  } catch (e) {
+    return res.status(500).send(e)
+  }
+})
+
+//approve
+router.post('/reject/:id', ensureManager, ensurePending, async (req, res) => {
+  try {
+    const approvedRequest = await requestService.reject(req.params.id)
+    res.send(`request ${approvedRequest.id} rejected`)
   } catch (e) {
     return res.status(500).send(e)
   }

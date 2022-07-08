@@ -11,9 +11,8 @@ datasource db {
 }
 
 model employee_type {
-  id    Int    @id @default(autoincrement())
-  value String
-
+  id       Int        @id @default(autoincrement())
+  value    String
   Employee Employee[]
 }
 

@@ -1,6 +1,7 @@
 const { PrismaClient } = require('@prisma/client')
 const prisma = new PrismaClient()
 var jwt = require('jsonwebtoken')
+const requestService = require('../service/request')
 
 const validateToken = async (req, res, next) => {
   const token = req.headers.token
@@ -23,4 +24,21 @@ const ensureManager = async (req, res, next) => {
   next()
 }
 
-module.exports = { validateToken, ensureManager }
+//validate :id param
+const validateId = (req, res, next) => {
+  const { id } = req.params
+  const num = Number(id)
+  if (!Number.isInteger(num)) return res.status(400).send()
+  req.params.id = num
+  next()
+}
+
+const ensurePending = async (req, res, next) => {
+  const request = await requestService.get(req.params.id)
+  if (request.status != 2)
+    return res.status(400).send('request is not pending anymore')
+
+  next()
+}
+
+module.exports = { validateToken, ensureManager, validateId, ensurePending }

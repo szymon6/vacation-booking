@@ -44,8 +44,8 @@ model Request {
   author              Int
   Status              request_status @relation(fields: [status], references: [id])
   status              Int
-  Resolved_by         Employee       @relation("resolved_by", fields: [resolved_by], references: [id])
-  resolved_by         Int
+  Resolved_by         Employee?      @relation("resolved_by", fields: [resolved_by], references: [id])
+  resolved_by         Int?
   vacation_start_date DateTime       @db.Date
   vacation_end_date   DateTime       @db.Date
 }

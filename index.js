@@ -7,6 +7,10 @@ app.use(cors())
 
 app.use(express.json())
 
+app.use('/auth', require('./routes/auth'))
+app.use('/requests', require('./routes/requests'))
+app.use(require('./routes/other'))
+
 app.listen(3100, () => {
   console.log(`Server is Listening on 3100`)
 })

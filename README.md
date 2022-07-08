@@ -9,6 +9,9 @@ postgresql://USER:PASSWORD@HOST:PORT/DATABASE?schema=SCHEMA
 
 (if DATABASE does not exist it will be created automatically)
 
+Please install dependencies:
+npm i
+
 Please run migration:
 npm run migrate
 
@@ -16,7 +19,7 @@ Please initialize database with:
 npm run init
 
 Application is ready to use, you can start it with:
-Npm start
+npm start
 
 ### Authorization:
 
@@ -33,15 +36,15 @@ post: /auth/login
 
 jwt token is sent back, it needs to be attached (by "token" key in header) to all fallowing REST requests
 
-steps for testing the app:
+in conclusion - steps for testing the app:
 
 1. login
-2. create some new vacation requests (line 52 of this file)
+2. create some new vacation requests (line 55 of this file)
 3. feel free to test all the endpoints, both as worker and manager
 
 ### Example routes:
 
-### routes for all employees
+### routes for all employees:
 
 -see my requests:
 get: /request
@@ -59,7 +62,7 @@ post: /request
 -see my days left:
 get: /days-left
 
-### routes only for managers
+### routes only for managers:
 
 -see all requests:
 get: /request/all

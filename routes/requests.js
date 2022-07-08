@@ -34,9 +34,16 @@ router.get('/', async (req, res) => {
 router.post('/', async (req, res) => {
   const { vacation_start_date, vacation_end_date } = req.body
   const id = req.headers.userId
+
   try {
-    const daysLeft = await getVacationDays(id)
+    if (vacation_start_date > vacation_end_date)
+      return res.status(400).send(`start date can't be greater that end date`)
+
     const days = getDays(vacation_start_date, vacation_end_date)
+    if (days == 0)
+      return res.status(400).send(`vacation must be at least one day long`)
+
+    const daysLeft = await getVacationDays(id)
 
     if (days > daysLeft)
       return res
@@ -91,6 +98,7 @@ router.post('/reject/:id', ensureManager, ensurePending, async (req, res) => {
 
 //get overlapping requests
 router.get('/all/overlapping', ensureManager, async (req, res) => {
+  console.log('hehe')
   try {
     const overlappingRequests = await requestService.getOverlappingRequests()
     res.send(overlappingRequests)

@@ -4,7 +4,7 @@
   "description": "It's November, and everyone is planning their holiday vacation. But management is struggling! They need a solution to approve vacation requests while also ensuring that there are still enough employees in the office to achieve end-of-year goals.",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon index",
+    "start": "nodemon .",
     "migrate": "prisma migrate dev --name init",
     "test": "echo \"Error: no test specified\" && exit 1",
     "init": "node ./utilities/initData.js"

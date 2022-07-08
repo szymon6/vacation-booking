@@ -6,16 +6,24 @@ const requestService = require('../service/request')
 const validateToken = async (req, res, next) => {
   const token = req.headers.token
 
-  await jwt.verify(token, 'testkey', async (err, decoded) => {
-    if (err) return res.status(403).send('bad jwt') //not authorized
+  if (!token) return res.status(403).send('no jwt')
 
-    const employee = await prisma.employee.findUnique({
-      where: { id: decoded.userId },
+  try {
+    await jwt.verify(token, 'testkey', async (err, decoded) => {
+      if (err) return res.status(403).send('bad jwt')
+
+      const employee = await prisma.employee.findUnique({
+        where: { id: decoded.userId },
+      })
+
+      if (!employee) return res.status(403).send('bad jwt')
+      req.headers.userId = employee.id
+      req.headers.userType = employee.type
+      next()
     })
-    req.headers.userId = employee.id
-    req.headers.userType = employee.type
-    next()
-  })
+  } catch (e) {
+    res.status(500).send(e)
+  }
 }
 
 const ensureManager = async (req, res, next) => {
@@ -33,6 +41,7 @@ const validateId = (req, res, next) => {
   next()
 }
 
+//ensure that vacation request is pending
 const ensurePending = async (req, res, next) => {
   const request = await requestService.get(req.params.id)
   if (request.status != 2)

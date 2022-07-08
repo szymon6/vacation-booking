@@ -23,7 +23,7 @@ router.post('/login', async (req, res) => {
 
     res.send({ user: employee, token })
   } catch (e) {
-    res.status(400).send(e) //bad request
+    res.status(500).send(e)
   }
 })
 

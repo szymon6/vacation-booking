@@ -34,23 +34,26 @@ router.get('/', async (req, res) => {
 router.post('/', async (req, res) => {
   const { vacation_start_date, vacation_end_date } = req.body
   const id = req.headers.userId
+  try {
+    const daysLeft = await getVacationDays(id)
+    const days = getDays(vacation_start_date, vacation_end_date)
 
-  const daysLeft = await getVacationDays(id)
-  const days = getDays(vacation_start_date, vacation_end_date)
+    if (days > daysLeft)
+      return res
+        .status(400)
+        .send(
+          `you are trying to book ${days} days, but your current limit is ${daysLeft}`
+        )
 
-  if (days > daysLeft)
-    return res
-      .status(400)
-      .send(
-        `you are trying to book ${days} days, but your current limit is ${daysLeft}`
-      )
-
-  const request = await requestService.newRequest(
-    id,
-    vacation_start_date,
-    vacation_end_date
-  )
-  res.send(`request successfully created, request id: ${request.id}`)
+    const request = await requestService.newRequest(
+      id,
+      vacation_start_date,
+      vacation_end_date
+    )
+    res.send(`request successfully created, request id: ${request.id}`)
+  } catch (e) {
+    return res.status(500).send(e)
+  }
 })
 
 //get all requests
@@ -76,11 +79,21 @@ router.post('/approve/:id', ensureManager, ensurePending, async (req, res) => {
   }
 })
 
-//approve
+//reject
 router.post('/reject/:id', ensureManager, ensurePending, async (req, res) => {
   try {
     const approvedRequest = await requestService.reject(req.params.id)
     res.send(`request ${approvedRequest.id} rejected`)
+  } catch (e) {
+    return res.status(500).send(e)
+  }
+})
+
+//get overlapping requests
+router.get('/all/overlapping', ensureManager, async (req, res) => {
+  try {
+    const overlappingRequests = await requestService.getOverlappingRequests()
+    res.send(overlappingRequests)
   } catch (e) {
     return res.status(500).send(e)
   }

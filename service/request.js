@@ -62,4 +62,46 @@ async function reject(id) {
   })
 }
 
-module.exports = { get, all, newRequest, approve, reject }
+async function getOverlappingRequests() {
+  function requestsOverlap(request1, request2) {
+    return (
+      request1.vacation_start_date <= request2.vacation_end_date &&
+      request2.vacation_start_date <= request1.vacation_end_date
+    )
+  }
+
+  function multipleRequestsOverlap(requests) {
+    let overlappingRequests = []
+
+    const pushUnique = (request) => {
+      if (overlappingRequests.indexOf(request) === -1)
+        overlappingRequests.push(request)
+    }
+
+    let i = 0,
+      j = 0
+
+    for (i = 0; i < requests.length - 1; i += 1) {
+      for (j = i + 1; j < requests.length; j += 1) {
+        if (requestsOverlap(requests[i], requests[j])) {
+          pushUnique(requests[i])
+          pushUnique(requests[j])
+        }
+      }
+    }
+    return overlappingRequests
+  }
+
+  const all = await prisma.request.findMany()
+  const overlapping = multipleRequestsOverlap(all)
+  return overlapping
+}
+
+module.exports = {
+  get,
+  all,
+  newRequest,
+  approve,
+  reject,
+  getOverlappingRequests,
+}

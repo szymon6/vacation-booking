@@ -8,10 +8,10 @@ post: /auth/login
 "password": "p1"
 }
 
-jwt token is sended, it needs to be attached (by "token" key in header) to all fallowing requests:
+jwt token is sended, it needs to be attached (by "token" key in header) to all fallowing requests
 
 there are 4 employees, each of them has login: 'userX' and password: 'pX'
-user 1 and 3 are 'workers' and users 2 and 4 are 'managers'
+user 1 and 3 are 'workers', users 2 and 4 are 'managers'
 
 ### routes for all employees
 
@@ -27,7 +27,7 @@ post: /request
 days left:
 get: /days-left
 
-### routes for managers
+### routes only for managers
 
 see all requests:
 get: /request/all
@@ -41,11 +41,11 @@ get: /request/all/?employee=1
 see all pending employee's requests:
 get: /request/all/?employee=1&status=pending
 
+overlapping request:
+get: /request/all/overlapping
+
 approve request:
 post: /request/approve/:id
 
 reject request:
 post: /request/reject/:id
-
-overlapping request:
-get: /request/overlapping

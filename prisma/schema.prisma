@@ -10,19 +10,24 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Worker {
-  id           Int       @id @default(autoincrement())
-  name         String
-  surname      String
-  vacationDays Int
-  requests     Request[]
+model employee_type {
+  id    Int    @id @default(autoincrement())
+  value String
+
+  Employee Employee[]
 }
 
-model Manager {
-  id                Int       @id @default(autoincrement())
+model Employee {
+  id                Int           @id @default(autoincrement())
+  login             String
+  password          String
   name              String
-  surname           String
-  resolved_requests Request[]
+  vacationDays      Int
+  Type              employee_type @relation(fields: [type], references: [id])
+  type              Int
+  requests          Request[]     @relation("author")
+  resolved_requests Request[]     @relation("resolved_by")
+
 }
 
 model request_status {
@@ -35,11 +40,11 @@ model Request {
   id                  Int            @id @default(autoincrement())
   request_created_at  DateTime       @default(now()) @db.Date
   request_updated_at  DateTime       @updatedAt @db.Date
-  Author              Worker         @relation(fields: [author], references: [id])
+  Author              Employee       @relation("author", fields: [author], references: [id])
   author              Int
   Status              request_status @relation(fields: [status], references: [id])
   status              Int
-  Resolved_by         Manager        @relation(fields: [resolved_by], references: [id])
+  Resolved_by         Employee       @relation("resolved_by", fields: [resolved_by], references: [id])
   resolved_by         Int
   vacation_start_date DateTime       @db.Date
   vacation_end_date   DateTime       @db.Date

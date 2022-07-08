@@ -1,5 +1,5 @@
 const express = require('express')
-const { validateToken } = require('../middleware/validation')
+const { validateToken, ensureManager } = require('../middleware/validation')
 const moment = require('moment')
 const { getVacationDays } = require('../service/employee')
 const { newRequest } = require('../service/request')
@@ -14,7 +14,7 @@ router.use(validateToken)
 router.get('/', async (req, res) => {
   try {
     const myRequests = await requestService.all(
-      req.headers.userId, //its injected by middleware based on jwt
+      req.headers.userId, //injected by middleware
       req.query.status
     )
     res.send(myRequests)
@@ -46,7 +46,9 @@ router.post('/', async (req, res) => {
 })
 
 //get all requests
-router.get('/all', async (req, res) => {
+router.get('/all', ensureManager, async (req, res) => {
+  console.log(req.headers.userType)
+
   try {
     const allRequests = await requestService.all(
       req.query.author,

@@ -6,16 +6,21 @@ const validateToken = async (req, res, next) => {
   const token = req.headers.token
 
   await jwt.verify(token, 'testkey', async (err, decoded) => {
-    if (err) return res.status(403).send() //not authorized (bad jwt)
+    if (err) return res.status(403).send('bad jwt') //not authorized
 
     const employee = await prisma.employee.findUnique({
-      select: { id: true, login: true },
       where: { id: decoded.userId },
     })
     req.headers.userId = employee.id
-    console.log('authorized')
+    req.headers.userType = employee.type
     next()
   })
 }
 
-module.exports = { validateToken }
+const ensureManager = async (req, res, next) => {
+  if (req.headers.userType != 2)
+    return res.status(403).send("you don't have sufficient rights")
+  next()
+}
+
+module.exports = { validateToken, ensureManager }

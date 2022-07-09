@@ -25,6 +25,9 @@ async function all(author, status) {
       Status: {
         select: { value: true },
       },
+      Resolved_by: {
+        select: { name: true },
+      },
     },
 
     orderBy: { id: 'asc' },
@@ -43,7 +46,7 @@ async function newRequest(author, vacation_start_date, vacation_end_date) {
   })
 }
 
-async function approve(id) {
+async function approve(id, resolvedBy) {
   const request = await get(id)
 
   const days = getDays(request.vacation_start_date, request.vacation_end_date)
@@ -51,14 +54,14 @@ async function approve(id) {
 
   return await prisma.request.update({
     where: { id },
-    data: { status: 1 },
+    data: { status: 1, resolved_by: resolvedBy },
   })
 }
 
-async function reject(id) {
+async function reject(id, resolvedBy) {
   return await prisma.request.update({
     where: { id },
-    data: { status: 3 },
+    data: { status: 3, resolved_by: resolvedBy },
   })
 }
 

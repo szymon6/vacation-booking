@@ -79,7 +79,10 @@ router.get('/all', ensureManager, async (req, res) => {
 //approve
 router.post('/approve/:id', ensureManager, ensurePending, async (req, res) => {
   try {
-    const approvedRequest = await requestService.approve(req.params.id)
+    const approvedRequest = await requestService.approve(
+      req.params.id,
+      req.headers.userId
+    )
     res.send(`request ${approvedRequest.id} approved`)
   } catch (e) {
     return res.status(500).send(e)
@@ -89,7 +92,10 @@ router.post('/approve/:id', ensureManager, ensurePending, async (req, res) => {
 //reject
 router.post('/reject/:id', ensureManager, ensurePending, async (req, res) => {
   try {
-    const approvedRequest = await requestService.reject(req.params.id)
+    const approvedRequest = await requestService.reject(
+      req.params.id,
+      req.headers.userId
+    )
     res.send(`request ${approvedRequest.id} rejected`)
   } catch (e) {
     return res.status(500).send(e)

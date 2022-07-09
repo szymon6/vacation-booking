@@ -12,7 +12,7 @@ datasource db {
 
 model employee_type {
   id       Int        @id @default(autoincrement())
-  value    String
+  value    String     @unique
   Employee Employee[]
 }
 

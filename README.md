@@ -23,7 +23,7 @@ npm start
 
 ### Authorization:
 
-there are 4 employees, each of them has login: 'userX' and password: 'pX' (user1 - p1, user2 - p2...)
+There are 4 employees, each of them has login: 'userX' and password: 'pX' (user1 - p1, user2 - p2...)
 user 1 and 3 are 'workers', users 2 and 4 are 'managers'
 
 example login request:
